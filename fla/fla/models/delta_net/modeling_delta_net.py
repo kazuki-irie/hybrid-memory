@@ -175,6 +175,8 @@ class DeltaNetModel(DeltaNetPreTrainedModel):
 
         self.gradient_checkpointing = False
 
+        self.dropout_emb = nn.Dropout(0.1)
+
         self.post_init()
 
     def get_input_embeddings(self):
@@ -211,6 +213,7 @@ class DeltaNetModel(DeltaNetPreTrainedModel):
 
         if inputs_embeds is None:
             inputs_embeds = self.embeddings(input_ids)
+        inputs_embeds = self.dropout_emb(inputs_embeds)
         hidden_states = inputs_embeds
 
         if use_cache and not isinstance(past_key_values, Cache):

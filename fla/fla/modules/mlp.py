@@ -51,6 +51,7 @@ class GatedMLP(nn.Module):
         self.down_proj = nn.Linear(self.intermediate_size, self.hidden_size, bias=False)
         if self.fuse_swiglu:
             self.swiglu_linear = SwiGLULinear()
+        self.dropout = nn.Dropout(0.1)
 
     def forward(
         self,
@@ -59,9 +60,9 @@ class GatedMLP(nn.Module):
     ) -> torch.Tensor:
         gate, y = self.gate_proj(x), self.up_proj(x)
         if self.fuse_swiglu:
-            return self.swiglu_linear(gate, y, self.down_proj.weight, self.down_proj.bias)
+            return self.dropout(self.swiglu_linear(gate, y, self.down_proj.weight, self.down_proj.bias))
         else:
-            return self.down_proj(swiglu(gate, y))
+            return self.dropout(self.down_proj(swiglu(gate, y)))
 
 
 class SwiGLULinear(nn.Module):

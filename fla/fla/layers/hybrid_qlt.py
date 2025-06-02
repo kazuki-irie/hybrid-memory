@@ -170,6 +170,9 @@ class HybridQLT(nn.Module):
         self.k_proj = nn.Linear(hidden_size, self.key_dim, bias=False)
         self.v_proj = nn.Linear(hidden_size, self.value_dim, bias=False)
 
+        self.dropout_proj = nn.Dropout(0.1)
+        self.dropout_out = nn.Dropout(0.1)
+
         if self.use_local_pos_encoding:
             self.rope_theta = 10000.  # hard coded atm
             self.rotary = RotaryEmbedding(dim=self.head_k_dim, base=self.rope_theta)
@@ -276,6 +279,10 @@ class HybridQLT(nn.Module):
             q = self.q_proj(hidden_states)
             k = self.k_proj(hidden_states)
             v = F.silu(self.v_proj(hidden_states))
+
+        q = self.dropout_proj(q)
+        k = self.dropout_proj(k)
+        v = self.dropout_proj(v)
 
         q, k = map(lambda x: rearrange(x, '... (h d) -> ... h d', d=self.head_k_dim), (q, k))
         v = rearrange(v, '... (h d) -> ... h d', d=self.head_v_dim)
@@ -715,6 +722,8 @@ class HybridQLT(nn.Module):
             o = self.o_norm(o)
         o = rearrange(o, 'b t h d -> b t (h d)')
         o = self.o_proj(o)
+        o = self.dropout_out(o)
+
         if attention_mask is not None:
             o = pad_input(o.squeeze(0), indices, batch_size, q_len)
 

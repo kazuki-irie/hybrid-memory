@@ -126,6 +126,9 @@ class DeltaNet(nn.Module):
         self.k_proj = nn.Linear(hidden_size, self.key_dim, bias=False)
         self.v_proj = nn.Linear(hidden_size, self.value_dim, bias=False)
 
+        self.dropout_proj = nn.Dropout(0.1)
+        self.dropout_out = nn.Dropout(0.1)
+
         self.use_beta = use_beta
         if self.use_beta:
             self.b_proj = nn.Linear(hidden_size, self.num_heads, bias=False)
@@ -213,6 +216,10 @@ class DeltaNet(nn.Module):
                 q, k = F.silu(q), F.silu(k)
             v = F.silu(self.v_proj(hidden_states))
 
+        q = self.dropout_proj(q)
+        k = self.dropout_proj(k)
+        v = self.dropout_proj(v)
+
         q, k = map(lambda x: rearrange(x, '... (h d) -> ... h d', d=self.head_k_dim), (q, k))
         v = rearrange(v, '... (h d) -> ... h d', d=self.head_v_dim)
         if self.qk_activation != 'silu':
@@ -276,6 +283,8 @@ class DeltaNet(nn.Module):
             o = self.o_norm(o)
         o = rearrange(o, 'b t h d -> b t (h d)')
         o = self.o_proj(o)
+        o = self.dropout_out(o)
+
         if attention_mask is not None:
             o = pad_input(o.squeeze(0), indices, batch_size, q_len)
 
