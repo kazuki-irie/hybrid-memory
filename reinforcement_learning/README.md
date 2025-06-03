@@ -36,7 +36,7 @@ python main.py \
 
 Modify the `--config_seq` argument above to change the sequence model as follows:
 * Transformer: `configs/seq_models/gpt_cnn_2lay_2head.py`
-* DeltaNet: `configs/seq_models/deltanet_cnn_2lay_2head.py`
-* HQLT (synchronous): `configs/seq_models/hqlt_cnn_2lay_2head.py`
+* DeltaNet: `configs/seq_models/deltanet_cnn_3lay_2head.py`
+* HQLT (synchronous): `configs/seq_models/hqlt_cnn_3lay_2head.py`
 
 Training progress and evaluation can be monitored on "weights and biases" (check `return` and `suceess` for evaluation)

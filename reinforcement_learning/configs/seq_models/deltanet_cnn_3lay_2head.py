@@ -47,12 +47,12 @@ def get_config():
 
     # seq_model_config specific
     config.model.seq_model_config = ConfigDict()
-    config.model.seq_model_config.name = "hqlt"
+    config.model.seq_model_config.name = "deltanet"
 
     config.model.seq_model_config.hidden_size = (
         128  # NOTE: will be overwritten by name_fn
     )
-    config.model.seq_model_config.n_layer = 2
+    config.model.seq_model_config.n_layer = 3
     config.model.seq_model_config.n_head = 2
     config.model.seq_model_config.pdrop = 0.1
     config.model.seq_model_config.position_encoding = "sine"
