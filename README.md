@@ -2,7 +2,7 @@
 
 This is the official code repository for the paper:
 
-[Blending Complementary Memory Systems in Hybrid Quadratic-Linear Transformers (link coming soon)]()
+[Blending Complementary Memory Systems in Hybrid Quadratic-Linear Transformers](https://arxiv.org/abs/2506.00744)
 
 ## Contents
 
